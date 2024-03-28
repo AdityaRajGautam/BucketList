@@ -8,10 +8,22 @@ import './PlaceItem.css';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
+  const [showConfirmModal,setShowConfirmModal] = useState(false)
 
   const openMapHandler = () => setShowMap(true);
 
   const closeMapHandler = () => setShowMap(false);
+
+  const showDeleteWarningHandler = () =>{
+    setShowConfirmModal(true)
+  }
+  const cancelDeleteWarningHAndler = () =>{
+    setShowConfirmModal(false)
+  }
+  const confirmDeleteHandler = () =>{
+    setShowConfirmModal(false)
+    console.log('deleteing....')
+  }
 
   return (
     <React.Fragment>
@@ -29,6 +41,14 @@ const PlaceItem = props => {
           <h2>This is map</h2>
         </div>
       </Modal>
+      <Modal show={showConfirmModal} onCancel={cancelDeleteWarningHAndler} header='Are you sure?' footerClass='place-item__modal-action' footer={
+        <React.Fragment>
+          <Button inverse onClick={cancelDeleteWarningHAndler}>Cancel</Button>
+          <Button danger onClick={confirmDeleteHandler}>Delete</Button>
+        </React.Fragment>
+      }>
+        <p>Do you want to proceed and delete this place permanentaly???</p>
+      </Modal>
       <li className="place-item">
         <Card className="place-item__content">
           <div className="place-item__image">
@@ -42,7 +62,7 @@ const PlaceItem = props => {
           <div className="place-item__actions">
             <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
             <Button to={`/places/${props.id}`}>EDIT</Button>
-            <Button danger>DELETE</Button>
+            <Button danger onClick={showDeleteWarningHandler}>DELETE</Button>
           </div>
         </Card>
       </li>
