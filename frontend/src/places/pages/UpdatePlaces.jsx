@@ -99,7 +99,7 @@ const UpdatePlaces = () => {
              element='input'
              lable='Title'
              validators={[VALIDATOR_REQUIRE()]}
-             errorText='Please enter a valid titile'
+             errorText='Please enter a valid title'
              onInput={inputHandler}
              value={formState.inputs.title.value}
              valid={formState.inputs.title.isValid}
