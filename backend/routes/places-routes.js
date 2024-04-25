@@ -6,7 +6,7 @@ const router = express.Router();
 router.route('/:pid').get(getPlaceById)
 router.route('/user/:uid').get(getPlaceByUserId);
 router.route('/').post(createplace)
-router.route('/:pid').put(updatePlace);
+router.route('/:pid').patch(updatePlace);
 router.route('/:pid').delete(deletePlace)
 
 
