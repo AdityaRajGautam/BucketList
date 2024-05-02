@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
+import {validationResult} from 'express-validator'
 import HttpError from "../models/http-error.js";
+import getCoordinatesForAddress from '../util/location.js';
 
 let DUMMY_PLACES = [
     {
@@ -40,8 +42,19 @@ let DUMMY_PLACES = [
     res.status(400).json({places});
   }
 
-  export const createplace = (req,res,next) => {
-    const {title,description,coordinates,address,creator} = req.body;
+  export const createplace = async (req,res,next) => {
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+      console.log(error)
+      return next( new HttpError('Invalis Inputs Passed',422))
+    }
+    const {title,description,address,creator} = req.body;
+    let coordinates;
+    try {
+      coordinates = await getCoordinatesForAddress(address)
+    } catch (error) {
+      return next(error)
+    }
 
     const createdPlace = {
         id:uuidv4(),
@@ -57,6 +70,11 @@ let DUMMY_PLACES = [
   }
 
   export const updatePlace = (req, res, next) => {
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+      console.log(error)
+      throw new HttpError('Invalis Inputs Passed',422)
+    }
     const { title, description } = req.body;
     const { pid } = req.params;
     
@@ -71,6 +89,9 @@ let DUMMY_PLACES = [
 
   export const deletePlace = (req,res,next) => {
     const {pid} = req.params;
+    if(!DUMMY_PLACES.find(p=>p.pid===pid)){
+      throw new HttpError('Place Does not found',404);
+    }
     DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id!=pid)
     res.status(200).json({success:'true',message:'place deleted successfully'})
   }
